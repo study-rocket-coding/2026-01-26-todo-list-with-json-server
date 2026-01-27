@@ -1,4 +1,4 @@
-let data = [];
+let todos = [];
 
 function renderData() {
   const filteredData = getFilteredData();
@@ -29,14 +29,14 @@ function renderData() {
     return;
   }
 
-  filteredData.forEach(function (item) {
+  filteredData.forEach(function (todo) {
     const li = document.createElement("li");
-    const originalIndex = data.indexOf(item);
-    const isCompleted = item.completed;
+    const originalIndex = todos.indexOf(todo);
+    const isCompleted = todo.completed;
 
     li.innerHTML = filteredTemplate(isCompleted, originalIndex);
 
-    li.querySelector("span").textContent = item.content;
+    li.querySelector("span").textContent = todo.content;
 
     list.appendChild(li);
   });
@@ -66,7 +66,7 @@ function createTodoItem(e) {
     completed: false, // 預設為未完成
   };
 
-  data.push(obj);
+  todos.push(obj);
   text.value = "";
   renderData();
 }
@@ -87,7 +87,7 @@ function deleteTodoItem(e) {
   if (!isConfirmed) return;
 
   const num = deleteBtn.getAttribute("data-num");
-  data.splice(num, 1);
+  todos.splice(num, 1);
 
   renderData();
 }
@@ -100,12 +100,12 @@ function getFilteredData() {
   let currentFilter = activeTab ? activeTab.getAttribute("data-status") : "all";
 
   if (currentFilter === "pending") {
-    return data.filter((item) => !item.completed);
+    return todos.filter((todo) => !todo.completed);
   } else if (currentFilter === "completed") {
-    return data.filter((item) => item.completed);
+    return todos.filter((todo) => todo.completed);
   }
 
-  return data;
+  return todos;
 }
 
 // 切換完成狀態功能
@@ -119,7 +119,7 @@ function toggleTodoStatus(e) {
 
   const index = checkbox.getAttribute("data-index");
 
-  data[index].completed = !data[index].completed;
+  todos[index].completed = !todos[index].completed;
 
   renderData();
 }
@@ -142,7 +142,7 @@ filterTabs.addEventListener("click", function (e) {
 
 // 更新完成數量功能
 function updateCompletedCount() {
-  const completedCount = data.filter((item) => item.completed).length;
+  const completedCount = todos.filter((todo) => todo.completed).length;
   const countEl = document.getElementById("completed-count");
   countEl.textContent = completedCount;
 }
