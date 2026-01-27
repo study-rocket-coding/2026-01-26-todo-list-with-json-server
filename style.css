@@ -460,6 +460,10 @@ nav ul a span {
   overflow-y: auto;
 }
 
+.todoList_list .todoList_items .todoList_item:has(.no-data) {
+  overflow-y: hidden;
+}
+
 .todoList_list .todoList_items .todoList_label {
   width: 100%;
   display: -webkit-box;

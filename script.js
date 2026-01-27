@@ -97,15 +97,17 @@ todoList.addEventListener("click", deleteTodoItem);
 // 取得篩選後的資料
 function getFilteredData() {
   const activeTab = document.querySelector("#filterTabs a.active");
-  let currentFilter = activeTab ? activeTab.getAttribute("data-status") : "all";
+  const status = activeTab ? activeTab.getAttribute("data-status") : "all";
 
-  if (currentFilter === "pending") {
-    return todos.filter((todo) => !todo.completed);
-  } else if (currentFilter === "completed") {
-    return todos.filter((todo) => todo.completed);
+  switch (status) {
+    case "pending":
+      return todos.filter((todo) => !todo.completed);
+    case "completed":
+      return todos.filter((todo) => todo.completed);
+    case "all":
+    default:
+      return todos;
   }
-
-  return todos;
 }
 
 // 切換完成狀態功能
