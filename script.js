@@ -5,32 +5,41 @@ function renderData() {
   const list = document.querySelector(".todoList_item");
   list.innerHTML = "";
 
-  if (filteredData.length === 0) {
-    list.innerHTML = `
-      <li class="no-data">
-        <p>目前尚無代辦事項</p>
-      </li>
-    `;
-  } else {
-    filteredData.forEach(function (item) {
-      const originalIndex = data.indexOf(item);
-      const li = document.createElement("li");
+  const defaultTemplate = `
+    <li class="no-data">
+      <p>目前尚無待辦事項</p>
+    </li>
+  `;
 
-      li.innerHTML = `
-        <label class="todoList_label">
-          <input class="todoList_input" type="checkbox" ${ item.completed ? "checked" : "" } data-index="${originalIndex}">
-          <span></span>
-        </label>
-        <a href="#" class="delete_todo" data-num="${originalIndex}">
-          <i class="fa fa-times"></i>
-        </a>
-      `;
+  const filteredTemplate = (isCompleted, originalIndex) => `
+    <label class="todoList_label">
+      <input class="todoList_input" type="checkbox" ${isCompleted ? "checked" : ""} data-index="${originalIndex}">
+      <span></span>
+    </label>
+    <a href="#" class="delete_todo" data-num="${originalIndex}">
+      <i class="fa fa-times"></i>
+    </a>
+  `;
 
-      li.querySelector("span").textContent = item.content;
+  const isEmptyData = filteredData.length === 0;
 
-      list.appendChild(li);
-    });
+  if (isEmptyData) {
+    list.innerHTML = defaultTemplate;
+    updateCompletedCount();
+    return;
   }
+
+  filteredData.forEach(function (item) {
+    const li = document.createElement("li");
+    const originalIndex = data.indexOf(item);
+    const isCompleted = item.completed;
+
+    li.innerHTML = filteredTemplate(isCompleted, originalIndex);
+
+    li.querySelector("span").textContent = item.content;
+
+    list.appendChild(li);
+  });
 
   updateCompletedCount();
 }
@@ -44,17 +53,17 @@ const createTodo = document.querySelector(".create_todo");
 function createTodoItem(e) {
   e.preventDefault();
 
-  const todoContent = text.value.trim();
+  const todoItem = text.value.trim();
 
-  if (todoContent === "") {
+  if (todoItem === "") {
     alert("請輸入內容");
     text.value = "";
     return;
   }
 
-  let obj = {
-    content: todoContent,
-    completed: false // 預設為未完成
+  const obj = {
+    content: todoItem,
+    completed: false, // 預設為未完成
   };
 
   data.push(obj);
@@ -73,11 +82,11 @@ function deleteTodoItem(e) {
 
   e.preventDefault();
 
-  const isConfirmed = confirm("確認刪除代辦事項？");
+  const isConfirmed = confirm("確認刪除待辦事項？");
 
   if (!isConfirmed) return;
 
-  let num = deleteBtn.getAttribute("data-num");
+  const num = deleteBtn.getAttribute("data-num");
   data.splice(num, 1);
 
   renderData();
@@ -104,7 +113,9 @@ const todoListItem = document.querySelector(".todoList_item");
 function toggleTodoStatus(e) {
   const checkbox = e.target;
 
-  if (!checkbox.classList.contains("todoList_input")) return;
+  const isChecked = checkbox.classList.contains("todoList_input");
+
+  if (!isChecked) return;
 
   const index = checkbox.getAttribute("data-index");
 
