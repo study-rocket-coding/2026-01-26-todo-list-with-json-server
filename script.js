@@ -85,7 +85,8 @@ function deleteTodoItem(e) {
 
   if (!isConfirmed) return;
 
-  const num = deleteBtn.getAttribute("data-num");
+  const numStr = deleteBtn.getAttribute("data-num");
+  const num = Number(numStr);
   todos.splice(num, 1);
 
   renderData();
