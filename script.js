@@ -111,7 +111,7 @@ function deleteTodoItem(e) {
 
   if (!isConfirmed) return;
 
-  const id = Number(deleteBtn.getAttribute("data-id"));
+  const id = deleteBtn.getAttribute("data-id");
 
   fetch(`http://localhost:3000/todos/${id}`, {
     method: "DELETE",
@@ -156,11 +156,30 @@ function toggleTodoStatus(e) {
 
   if (!isChecked) return;
 
-  const index = checkbox.getAttribute("data-index");
+  const id = checkbox.getAttribute("data-id");
+  const index = todos.findIndex((todo) => todo.id === id);
+  if (index === -1) return;
 
-  todos[index].completed = !todos[index].completed;
+  const newCompleted = !todos[index].completed;
 
-  renderData();
+  fetch(`http://localhost:3000/todos/${id}`, {
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      completed: newCompleted,
+    }),
+  })
+    .then(() => {
+      todos[index].completed = newCompleted;
+      renderData();
+    })
+    .catch((err) => {
+      console.error(err);
+      alert("切換完成狀態失敗");
+      checkbox.checked = !checkbox.checked; // 失敗時復原
+    });
 }
 
 todoList.addEventListener("change", toggleTodoStatus);
