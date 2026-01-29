@@ -1,6 +1,23 @@
 let todos = [];
 const todoList = document.getElementById("todoList");
 
+// 取得資料
+function fetchTodos() {
+  fetch("http://localhost:3000/todos")
+    .then((res) => res.json())
+    .then((data) => {
+      todos = data;
+      renderData();
+    })
+    .catch((err) => {
+      console.error(err);
+      alert("取得待辦資料失敗");
+    });
+}
+
+// 初始渲染
+fetchTodos();
+
 function renderData() {
   const filteredData = getFilteredData();
   todoList.innerHTML = "";
@@ -43,9 +60,6 @@ function renderData() {
 
   updateCompletedCount();
 }
-
-// 初始渲染
-renderData();
 
 // 新增待辦功能
 const text = document.querySelector(".text");
