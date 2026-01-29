@@ -1,8 +1,36 @@
 let todos = [];
+let isLoading = false;
+
 const todoList = document.getElementById("todoList");
+const text = document.querySelector(".text");
+const createTodo = document.querySelector(".create_todo");
+
+// Loading 狀態
+function showLoading() {
+  isLoading = true;
+
+  text.disabled = true;
+  text.style.cursor = "not-allowed";
+
+  createTodo.disabled = true;
+  createTodo.style.opacity = "0.5";
+  createTodo.style.cursor = "not-allowed";
+}
+function hideLoading() {
+  isLoading = false;
+
+  text.disabled = false;
+  text.style.cursor = "text";
+
+  createTodo.disabled = false;
+  createTodo.style.opacity = "1";
+  createTodo.style.cursor = "pointer";
+}
 
 // 取得資料
 function fetchTodos() {
+  showLoading();
+
   fetch("http://localhost:3000/todos")
     .then((res) => res.json())
     .then((data) => {
@@ -12,6 +40,9 @@ function fetchTodos() {
     .catch((err) => {
       console.error(err);
       alert("取得待辦資料失敗");
+    })
+    .finally(() => {
+      hideLoading();
     });
 }
 
@@ -62,10 +93,10 @@ function renderData() {
 }
 
 // 新增待辦功能
-const text = document.querySelector(".text");
-const createTodo = document.querySelector(".create_todo");
 function createTodoItem(e) {
   e.preventDefault();
+
+  if (isLoading) return;
 
   const todoItem = text.value.trim();
 
@@ -75,8 +106,10 @@ function createTodoItem(e) {
     return;
   }
 
+  showLoading();
+
   const obj = {
-    id: Date.now(), // 使用 Date.now() 生成唯一 id
+    id: String(Date.now()), // 使用 Date.now() 生成唯一 id
     content: todoItem,
     completed: false, // 預設為未完成
   };
@@ -94,6 +127,9 @@ function createTodoItem(e) {
     .catch((err) => {
       console.error(err);
       alert("新增待辦失敗");
+    })
+    .finally(() => {
+      hideLoading();
     });
 }
 
@@ -107,9 +143,13 @@ function deleteTodoItem(e) {
 
   e.preventDefault();
 
+  if (isLoading) return;
+
   const isConfirmed = confirm("確認刪除待辦事項？");
 
   if (!isConfirmed) return;
+
+  showLoading();
 
   const id = deleteBtn.getAttribute("data-id");
 
@@ -127,6 +167,9 @@ function deleteTodoItem(e) {
     .catch((err) => {
       console.error(err);
       alert("刪除待辦失敗");
+    })
+    .finally(() => {
+      hideLoading();
     });
 }
 
@@ -156,9 +199,16 @@ function toggleTodoStatus(e) {
 
   if (!isChecked) return;
 
+  if (isLoading) return;
+
+  showLoading();
+
   const id = checkbox.getAttribute("data-id");
   const index = todos.findIndex((todo) => todo.id === id);
-  if (index === -1) return;
+  if (index === -1) {
+    hideLoading();
+    return;
+  }
 
   const newCompleted = !todos[index].completed;
 
@@ -179,6 +229,9 @@ function toggleTodoStatus(e) {
       console.error(err);
       alert("切換完成狀態失敗");
       checkbox.checked = !checkbox.checked; // 失敗時復原
+    })
+    .finally(() => {
+      hideLoading();
     });
 }
 
