@@ -1,5 +1,6 @@
 let todos = [];
 let isLoading = false;
+const API_URL = "http://localhost:3000/todos";
 
 const todoList = document.getElementById("todoList");
 const text = document.querySelector(".text");
@@ -31,7 +32,7 @@ function hideLoading() {
 function fetchTodos() {
   showLoading();
 
-  fetch("http://localhost:3000/todos")
+  fetch(API_URL)
     .then((res) => res.json())
     .then((data) => {
       todos = data;
@@ -114,7 +115,7 @@ function createTodoItem(e) {
     completed: false, // 預設為未完成
   };
 
-  fetch("http://localhost:3000/todos", {
+  fetch(API_URL, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(obj),
@@ -153,7 +154,7 @@ function deleteTodoItem(e) {
 
   const id = deleteBtn.getAttribute("data-id");
 
-  fetch(`http://localhost:3000/todos/${id}`, {
+  fetch(`${API_URL}/${id}`, {
     method: "DELETE",
   })
     .then(() => {
@@ -212,7 +213,7 @@ function toggleTodoStatus(e) {
 
   const newCompleted = !todos[index].completed;
 
-  fetch(`http://localhost:3000/todos/${id}`, {
+  fetch(`${API_URL}/${id}`, {
     method: "PATCH",
     headers: {
       "Content-Type": "application/json",
