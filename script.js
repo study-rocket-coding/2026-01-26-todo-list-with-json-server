@@ -111,11 +111,23 @@ function deleteTodoItem(e) {
 
   if (!isConfirmed) return;
 
-  const numStr = deleteBtn.getAttribute("data-num");
-  const num = Number(numStr);
-  todos.splice(num, 1);
+  const id = Number(deleteBtn.getAttribute("data-id"));
 
-  renderData();
+  fetch(`http://localhost:3000/todos/${id}`, {
+    method: "DELETE",
+  })
+    .then(() => {
+      // API 刪除成功後，再更新本地陣列
+      const index = todos.findIndex((todo) => todo.id === id);
+      if (index !== -1) {
+        todos.splice(index, 1);
+        renderData();
+      }
+    })
+    .catch((err) => {
+      console.error(err);
+      alert("刪除待辦失敗");
+    });
 }
 
 todoList.addEventListener("click", deleteTodoItem);
