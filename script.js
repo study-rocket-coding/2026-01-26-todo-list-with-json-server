@@ -18,6 +18,7 @@ function fetchTodos() {
 // 初始渲染
 fetchTodos();
 
+// 渲染列表
 function renderData() {
   const filteredData = getFilteredData();
   todoList.innerHTML = "";
@@ -28,12 +29,12 @@ function renderData() {
     </li>
   `;
 
-  const filteredTemplate = (isCompleted, originalIndex) => `
+  const filteredTemplate = (isCompleted, todo) => `
     <label class="todoList_label">
-      <input class="todoList_input" type="checkbox" ${isCompleted ? "checked" : ""} data-index="${originalIndex}">
+      <input class="todoList_input" type="checkbox" ${isCompleted ? "checked" : ""} data-id="${todo.id}">
       <span></span>
     </label>
-    <a href="#" class="delete_todo" data-num="${originalIndex}">
+    <a href="#" class="delete_todo" data-id="${todo.id}">
       <i class="fa fa-times"></i>
     </a>
   `;
@@ -48,10 +49,9 @@ function renderData() {
 
   filteredData.forEach(function (todo) {
     const li = document.createElement("li");
-    const originalIndex = todos.indexOf(todo);
     const isCompleted = todo.completed;
 
-    li.innerHTML = filteredTemplate(isCompleted, originalIndex);
+    li.innerHTML = filteredTemplate(isCompleted, todo);
 
     li.querySelector("span").textContent = todo.content;
 
