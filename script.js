@@ -76,13 +76,25 @@ function createTodoItem(e) {
   }
 
   const obj = {
+    id: Date.now(), // 使用 Date.now() 生成唯一 id
     content: todoItem,
     completed: false, // 預設為未完成
   };
 
-  todos.push(obj);
-  text.value = "";
-  renderData();
+  fetch("http://localhost:3000/todos", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(obj),
+  })
+    .then((res) => res.json())
+    .then(() => {
+      text.value = "";
+      fetchTodos(); // 新增成功後重新抓資料
+    })
+    .catch((err) => {
+      console.error(err);
+      alert("新增待辦失敗");
+    });
 }
 
 createTodo.addEventListener("click", createTodoItem);
