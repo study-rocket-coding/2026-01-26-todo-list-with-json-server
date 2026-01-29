@@ -1,0 +1,24 @@
+{
+  "name": "2025-01-26-todo-list-with-json-server",
+  "version": "1.0.0",
+  "main": "script.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "server": "json-server --watch db.json --port 3000"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/study-rocket-coding/2025-01-26-todo-list-with-json-server.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/study-rocket-coding/2025-01-26-todo-list-with-json-server/issues"
+  },
+  "homepage": "https://github.com/study-rocket-coding/2025-01-26-todo-list-with-json-server#readme",
+  "description": "",
+  "dependencies": {
+    "json-server": "^1.0.0-beta.5"
+  }
+}
